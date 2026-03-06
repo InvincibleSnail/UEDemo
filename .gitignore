@@ -1,0 +1,49 @@
+# UE核心忽略项（必加）
+Binaries/
+Intermediate/
+Saved/
+DerivedDataCache/
+
+# C++项目额外忽略
+.vs/
+*.vcxproj.user
+*.sln.DotSettings
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Mac系统文件（必加，避免提交.DS_Store）
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+.DocumentRevisions-V100
+.fseventsd
+.Spotlight-V100
+.TemporaryItems
+.Trashes
+.VolumeIcon.icns
+.com.apple.timemachine.donotpresent
+
+# Windows系统文件
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# 插件编译产物（保留插件源码，忽略编译后的二进制）
+Plugins/*/Binaries/
+Plugins/*/Intermediate/
+
+# 临时文件
+*.tmp
+*.bak
+*.log
