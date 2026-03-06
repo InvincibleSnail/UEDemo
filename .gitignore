@@ -49,3 +49,5 @@ Plugins/*/Intermediate/
 *.tmp
 *.bak
 *.log
+
+.idea/
