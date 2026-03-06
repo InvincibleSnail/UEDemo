@@ -3,6 +3,7 @@ Binaries/
 Intermediate/
 Saved/
 DerivedDataCache/
+Build/
 
 # C++项目额外忽略
 .vs/
@@ -26,6 +27,7 @@ Icon
 .Trashes
 .VolumeIcon.icns
 .com.apple.timemachine.donotpresent
+*.xcworkspace
 
 # Windows系统文件
 Thumbs.db
