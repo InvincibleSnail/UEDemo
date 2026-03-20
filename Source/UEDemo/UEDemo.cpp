@@ -3,6 +3,6 @@
 #include "UEDemo.h"
 #include "Modules/ModuleManager.h"
 
-IMPLEMENT_PRIMARY_GAME_MODULE( FDefaultGameModuleImpl, UEDemo, "UEDemo" );
+IMPLEMENT_PRIMARY_GAME_MODULE(FDefaultGameModuleImpl, UEDemo, "UEDemo");
 
-DEFINE_LOG_CATEGORY(LogUEDemo)
+DEFINE_LOG_CATEGORY(LogUEDemo);

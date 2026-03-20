@@ -4,5 +4,5 @@
 
 #include "CoreMinimal.h"
 
-/** Main log category used across the project */
+/** 需要打日志时在 .cpp 里用 UE_LOG(LogUEDemo, Warning, TEXT("...")); */
 DECLARE_LOG_CATEGORY_EXTERN(LogUEDemo, Log, All);
