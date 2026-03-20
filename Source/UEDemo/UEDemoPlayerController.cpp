@@ -2,9 +2,6 @@
 
 
 #include "UEDemoPlayerController.h"
-#include "EnhancedInputSubsystems.h"
-#include "Engine/LocalPlayer.h"
-#include "InputMappingContext.h"
 #include "Blueprint/UserWidget.h"
 #include "UEDemo.h"
 #include "Widgets/Input/SVirtualJoystick.h"
@@ -36,28 +33,7 @@ void AUEDemoPlayerController::BeginPlay()
 void AUEDemoPlayerController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-
-	// only add IMCs for local player controllers
-	if (IsLocalPlayerController())
-	{
-		// Add Input Mapping Contexts
-		if (UEnhancedInputLocalPlayerSubsystem* Subsystem = ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(GetLocalPlayer()))
-		{
-			for (UInputMappingContext* CurrentContext : DefaultMappingContexts)
-			{
-				Subsystem->AddMappingContext(CurrentContext, 0);
-			}
-
-			// only add these IMCs if we're not using mobile touch input
-			if (!ShouldUseTouchControls())
-			{
-				for (UInputMappingContext* CurrentContext : MobileExcludedMappingContexts)
-				{
-					Subsystem->AddMappingContext(CurrentContext, 0);
-				}
-			}
-		}
-	}
+	// 无 Content 时由 DefaultInput.ini + 传统 PlayerInput 驱动；若以后加回 Enhanced Input IMC，可在此处 AddMappingContext
 }
 
 bool AUEDemoPlayerController::ShouldUseTouchControls() const
