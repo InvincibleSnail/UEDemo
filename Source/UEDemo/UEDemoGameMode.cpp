@@ -1,9 +1,9 @@
 #include "UEDemoGameMode.h"
-#include "UEDemoPawn.h"
+#include "UEDemoCharacter.h"
 #include "UEDemoController.h"
 
 AUEDemoGameMode::AUEDemoGameMode()
 {
-	DefaultPawnClass = AUEDemoPawn::StaticClass();
+	DefaultPawnClass = AUEDemoCharacter::StaticClass();
 	PlayerControllerClass = AUEDemoController::StaticClass();
 }
