@@ -15,6 +15,7 @@ public class UEDemo : ModuleRules
 			"UMG",
 			"Slate",
 			"SlateCore",
+			"EnhancedInput",
 		});
 
 		PrivateDependencyModuleNames.AddRange(new string[] { });
