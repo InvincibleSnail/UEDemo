@@ -11,7 +11,8 @@ UCLASS()
 class AUEDemoController : public APlayerController
 {
 	GENERATED_BODY()
-	protected:
+
+protected:
 	virtual void BeginPlay() override;
 	
 	UPROPERTY(EditAnywhere, Category="UI")

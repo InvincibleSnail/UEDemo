@@ -12,6 +12,7 @@ public class UEDemo : ModuleRules
 			"Core",
 			"CoreUObject",
 			"Engine",
+			"InputCore",
 			"UMG",
 			"Slate",
 			"SlateCore",
