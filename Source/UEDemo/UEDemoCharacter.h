@@ -13,8 +13,10 @@ class AUEDemoCharacter : public ACharacter
 
 protected:
 	UInputAction* MoveAction;
-	void Move();
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
+	virtual void BeginPlay() override;
+	void Move(const FInputActionValue& Value);
+
 public:
 	AUEDemoCharacter();
 };
