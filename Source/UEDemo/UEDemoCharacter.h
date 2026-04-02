@@ -4,6 +4,7 @@
 #include "GameFramework/Character.h"
 #include "UEDemoCharacter.generated.h"
 
+class UCameraComponent;
 class UInputAction;
 class UInputMappingContext;
 
@@ -20,12 +21,19 @@ protected:
 
 	void OnMoveForward(const struct FInputActionValue& Value);
 	void OnMoveRight(const struct FInputActionValue& Value);
+	void OnLook(const struct FInputActionValue& Value);
+
+	UPROPERTY()
+	TObjectPtr<UCameraComponent> FirstPersonCamera;
 
 	UPROPERTY()
 	TObjectPtr<UInputAction> MoveForwardAction;
 
 	UPROPERTY()
 	TObjectPtr<UInputAction> MoveRightAction;
+
+	UPROPERTY()
+	TObjectPtr<UInputAction> LookAction;
 
 	UPROPERTY()
 	TObjectPtr<UInputMappingContext> MoveMappingContext;
