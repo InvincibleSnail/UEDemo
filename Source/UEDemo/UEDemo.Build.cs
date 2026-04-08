@@ -8,6 +8,8 @@ public class UEDemo : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
+		PublicIncludePaths.Add(System.IO.Path.Combine(ModuleDirectory, "Input"));
+
 		PublicDependencyModuleNames.AddRange(new string[] {
 			"Core",
 			"CoreUObject",
