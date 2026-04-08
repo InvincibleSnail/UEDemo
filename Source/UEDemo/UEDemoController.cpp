@@ -1,12 +1,6 @@
 #include "UEDemoController.h"
 #include "UEDemoCharacter.h"
 
-void AUEDemoController::BeginPlay()
-{
-	Super::BeginPlay();
-	TryWirePawnInput();
-}
-
 void AUEDemoController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
