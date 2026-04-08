@@ -1,22 +1,16 @@
 #include "UEDemoCharacter.h"
+#include "UEDemoController.h"
+#include "Input/PlayerInputConfigEvent.h"
+#include "UInputComponentEx.h"
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
-#include "EnhancedInputComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Input/UInputComponentEx.h"
-#include "InputAction.h"
-#include "InputMappingContext.h"
-#include "InputModifiers.h"
 #include "GameFramework/PlayerController.h"
-#include "UEDemo.h"
 
 AUEDemoCharacter::AUEDemoCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
 	PrimaryActorTick.bCanEverTick = false;
-
-	OverrideInputComponentClass = UEnhancedInputComponent::StaticClass();
-
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = true;
 
@@ -26,62 +20,23 @@ AUEDemoCharacter::AUEDemoCharacter(const FObjectInitializer& ObjectInitializer)
 	FirstPersonCamera->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCamera->SetRelativeLocation(FVector(0.f, 0.f, 64.f));
 	FirstPersonCamera->bUsePawnControlRotation = true;
-
-	InputComponentEx = ObjectInitializer.CreateDefaultSubobject<UInputComponentEx>(this, TEXT("InputComponentEx"));
-
-	UInputAction* MoveForwardAction = ObjectInitializer.CreateDefaultSubobject<UInputAction>(this, TEXT("MoveForwardAction"));
-	MoveForwardAction->ValueType = EInputActionValueType::Axis1D;
-
-	UInputAction* MoveRightAction = ObjectInitializer.CreateDefaultSubobject<UInputAction>(this, TEXT("MoveRightAction"));
-	MoveRightAction->ValueType = EInputActionValueType::Axis1D;
-
-	UInputAction* LookAction = ObjectInitializer.CreateDefaultSubobject<UInputAction>(this, TEXT("LookAction"));
-	LookAction->ValueType = EInputActionValueType::Axis2D;
-
-	UInputMappingContext* MoveMappingContext = NewObject<UInputMappingContext>(this, TEXT("MoveMappingContext"));
-	MoveMappingContext->MapKey(MoveForwardAction, EKeys::W);
-	{
-		FEnhancedActionKeyMapping& MapS = MoveMappingContext->MapKey(MoveForwardAction, EKeys::S);
-		UInputModifierNegate* Negate = NewObject<UInputModifierNegate>(MoveMappingContext, TEXT("NegateForward"));
-		MapS.Modifiers.Add(Negate);
-	}
-	MoveMappingContext->MapKey(MoveRightAction, EKeys::D);
-	{
-		FEnhancedActionKeyMapping& MapA = MoveMappingContext->MapKey(MoveRightAction, EKeys::A);
-		UInputModifierNegate* Negate = NewObject<UInputModifierNegate>(MoveMappingContext, TEXT("NegateRight"));
-		MapA.Modifiers.Add(Negate);
-	}
-	MoveMappingContext->MapKey(LookAction, EKeys::Mouse2D);
-
-	InputComponentEx->InputConfig.MoveForwardAxis = MoveForwardAction;
-	InputComponentEx->InputConfig.MoveRightAxis = MoveRightAction;
-	InputComponentEx->InputConfig.Look = LookAction;
-	InputComponentEx->InputConfig.DefaultMappingContext = MoveMappingContext;
 }
 
-void AUEDemoCharacter::WireInputWithController(APlayerController* PC)
+void AUEDemoCharacter::BeginPlay()
 {
-	if (!PC || !InputComponentEx)
-	{
-		UE_LOG(LogUEDemo, Warning, TEXT("UEDemoCharacter::WireInputWithController: missing PC or InputComponentEx."));
-		return;
-	}
-
-	BindInputDelegatesIfNeeded();
-	InputComponentEx->InitializeInput(PC);
-}
-
-void AUEDemoCharacter::BindInputDelegatesIfNeeded()
-{
-	if (bInputGameplayDelegatesBound || !InputComponentEx)
+	Super::BeginPlay();
+	AueDemoController = Cast<AUEDemoController>(GetController());
+	if (!AueDemoController)
 	{
 		return;
 	}
 
-	InputComponentEx->OnMoveForwardAxis.AddUObject(this, &AUEDemoCharacter::OnMoveForwardAxis);
-	InputComponentEx->OnMoveRightAxis.AddUObject(this, &AUEDemoCharacter::OnMoveRightAxis);
-	InputComponentEx->OnLook.AddUObject(this, &AUEDemoCharacter::OnLookAxis);
-	bInputGameplayDelegatesBound = true;
+	if (UInputComponentEx* InputEx = AueDemoController->GetInputComponentEx())
+	{
+		InputEx->RegisterInput(EPlayerInputConfigEvent::MoveForwardAxis, this, &AUEDemoCharacter::OnMoveForwardAxis);
+		InputEx->RegisterInput(EPlayerInputConfigEvent::MoveRightAxis, this, &AUEDemoCharacter::OnMoveRightAxis);
+		InputEx->RegisterInput(EPlayerInputConfigEvent::Look, this, &AUEDemoCharacter::OnLookAxis);
+	}
 }
 
 void AUEDemoCharacter::OnMoveForwardAxis(float Axis)

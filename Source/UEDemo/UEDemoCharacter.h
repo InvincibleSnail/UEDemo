@@ -5,7 +5,7 @@
 #include "UEDemoCharacter.generated.h"
 
 class UCameraComponent;
-class UInputComponentEx;
+class AUEDemoController;
 
 UCLASS()
 class AUEDemoCharacter : public ACharacter
@@ -14,24 +14,17 @@ class AUEDemoCharacter : public ACharacter
 
 public:
 	AUEDemoCharacter(const FObjectInitializer& ObjectInitializer);
-
-	void WireInputWithController(APlayerController* PC);
-
-	UInputComponentEx* GetInputComponentEx() const { return InputComponentEx; }
-
+	
 protected:
 	UPROPERTY()
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
-
 	UPROPERTY()
-	TObjectPtr<UInputComponentEx> InputComponentEx;
+	AUEDemoController* AueDemoController;
+	
+	virtual void BeginPlay() override;
 
 private:
-	void BindInputDelegatesIfNeeded();
-
 	void OnMoveForwardAxis(float Axis);
 	void OnMoveRightAxis(float Axis);
 	void OnLookAxis(const FVector2D& Axis);
-
-	bool bInputGameplayDelegatesBound = false;
 };
