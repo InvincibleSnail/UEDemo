@@ -8,4 +8,10 @@ UCLASS()
 class AUEDemoController : public APlayerController
 {
 	GENERATED_BODY()
+
+protected:
+	virtual void BeginPlay() override;
+	virtual void OnPossess(APawn* InPawn) override;
+
+	void TryWirePawnInput();
 };

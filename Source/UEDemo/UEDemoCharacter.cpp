@@ -59,33 +59,29 @@ AUEDemoCharacter::AUEDemoCharacter(const FObjectInitializer& ObjectInitializer)
 	InputComponentEx->InputConfig.DefaultMappingContext = MoveMappingContext;
 }
 
-void AUEDemoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AUEDemoCharacter::WireInputWithController(APlayerController* PC)
 {
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-
-	UEnhancedInputComponent* EnhancedInput = Cast<UEnhancedInputComponent>(PlayerInputComponent);
-	if (!EnhancedInput)
+	if (!PC || !InputComponentEx)
 	{
-		UE_LOG(LogUEDemo, Warning, TEXT("UEDemoCharacter: InputComponent is not UEnhancedInputComponent."));
+		UE_LOG(LogUEDemo, Warning, TEXT("UEDemoCharacter::WireInputWithController: missing PC or InputComponentEx."));
 		return;
 	}
 
-	APlayerController* PC = Cast<APlayerController>(GetController());
-	if (!PC)
-	{
-		UE_LOG(LogUEDemo, Warning, TEXT("UEDemoCharacter: No PlayerController during SetupPlayerInputComponent."));
-		return;
-	}
-
-	if (!bInputExHooked)
-	{
-		InputComponentEx->OnMoveForwardAxis.AddUObject(this, &AUEDemoCharacter::OnMoveForwardAxis);
-		InputComponentEx->OnMoveRightAxis.AddUObject(this, &AUEDemoCharacter::OnMoveRightAxis);
-		InputComponentEx->OnLook.AddUObject(this, &AUEDemoCharacter::OnLookAxis);
-		bInputExHooked = true;
-	}
-
+	BindInputDelegatesIfNeeded();
 	InputComponentEx->InitializeInput(PC);
+}
+
+void AUEDemoCharacter::BindInputDelegatesIfNeeded()
+{
+	if (bInputGameplayDelegatesBound || !InputComponentEx)
+	{
+		return;
+	}
+
+	InputComponentEx->OnMoveForwardAxis.AddUObject(this, &AUEDemoCharacter::OnMoveForwardAxis);
+	InputComponentEx->OnMoveRightAxis.AddUObject(this, &AUEDemoCharacter::OnMoveRightAxis);
+	InputComponentEx->OnLook.AddUObject(this, &AUEDemoCharacter::OnLookAxis);
+	bInputGameplayDelegatesBound = true;
 }
 
 void AUEDemoCharacter::OnMoveForwardAxis(float Axis)
