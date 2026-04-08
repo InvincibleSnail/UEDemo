@@ -15,8 +15,7 @@ class AUEDemoCharacter : public ACharacter
 public:
 	AUEDemoCharacter(const FObjectInitializer& ObjectInitializer);
 
-	/** 由 AUEDemoController::OnPossess 调用：绑定 Input 委托到本角色并 Initialize Enhanced Input */
-	void WireInputWithController(class APlayerController* PC);
+	void WireInputWithController(APlayerController* PC);
 
 	UInputComponentEx* GetInputComponentEx() const { return InputComponentEx; }
 
