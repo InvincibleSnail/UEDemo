@@ -22,7 +22,6 @@ public:
 
 	void InitializeInput(APlayerController* PlayerController);
 
-	/** 按枚举绑定到对应委托（签名需与槽位一致）。 */
 	template<typename U>
 	void RegisterInput(EPlayerInputConfigEvent Slot, U* User, void (U::*Handler)(float));
 
