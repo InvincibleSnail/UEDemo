@@ -5,8 +5,7 @@
 #include "UEDemoCharacter.generated.h"
 
 class UCameraComponent;
-class UInputAction;
-class UInputMappingContext;
+class UInputComponentEx;
 
 UCLASS()
 class AUEDemoCharacter : public ACharacter
@@ -19,24 +18,16 @@ public:
 protected:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void OnMoveForward(const struct FInputActionValue& Value);
-	void OnMoveRight(const struct FInputActionValue& Value);
-	void OnLook(const struct FInputActionValue& Value);
-
 	UPROPERTY()
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
 
 	UPROPERTY()
-	TObjectPtr<UInputAction> MoveForwardAction;
+	TObjectPtr<UInputComponentEx> InputComponentEx;
 
-	UPROPERTY()
-	TObjectPtr<UInputAction> MoveRightAction;
+private:
+	void OnMoveForwardAxis(float Axis);
+	void OnMoveRightAxis(float Axis);
+	void OnLookAxis(const FVector2D& Axis);
 
-	UPROPERTY()
-	TObjectPtr<UInputAction> LookAction;
-
-	UPROPERTY()
-	TObjectPtr<UInputMappingContext> MoveMappingContext;
-
-	bool bMoveMappingAdded = false;
+	bool bInputExHooked = false;
 };

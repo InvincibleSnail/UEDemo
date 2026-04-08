@@ -2,10 +2,9 @@
 #include "Camera/CameraComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Input/UInputComponentEx.h"
 #include "InputAction.h"
-#include "InputActionValue.h"
 #include "InputMappingContext.h"
 #include "InputModifiers.h"
 #include "GameFramework/PlayerController.h"
@@ -28,14 +27,36 @@ AUEDemoCharacter::AUEDemoCharacter(const FObjectInitializer& ObjectInitializer)
 	FirstPersonCamera->SetRelativeLocation(FVector(0.f, 0.f, 64.f));
 	FirstPersonCamera->bUsePawnControlRotation = true;
 
-	MoveForwardAction = ObjectInitializer.CreateDefaultSubobject<UInputAction>(this, TEXT("MoveForwardAction"));
+	InputComponentEx = ObjectInitializer.CreateDefaultSubobject<UInputComponentEx>(this, TEXT("InputComponentEx"));
+
+	UInputAction* MoveForwardAction = ObjectInitializer.CreateDefaultSubobject<UInputAction>(this, TEXT("MoveForwardAction"));
 	MoveForwardAction->ValueType = EInputActionValueType::Axis1D;
 
-	MoveRightAction = ObjectInitializer.CreateDefaultSubobject<UInputAction>(this, TEXT("MoveRightAction"));
+	UInputAction* MoveRightAction = ObjectInitializer.CreateDefaultSubobject<UInputAction>(this, TEXT("MoveRightAction"));
 	MoveRightAction->ValueType = EInputActionValueType::Axis1D;
 
-	LookAction = ObjectInitializer.CreateDefaultSubobject<UInputAction>(this, TEXT("LookAction"));
+	UInputAction* LookAction = ObjectInitializer.CreateDefaultSubobject<UInputAction>(this, TEXT("LookAction"));
 	LookAction->ValueType = EInputActionValueType::Axis2D;
+
+	UInputMappingContext* MoveMappingContext = NewObject<UInputMappingContext>(this, TEXT("MoveMappingContext"));
+	MoveMappingContext->MapKey(MoveForwardAction, EKeys::W);
+	{
+		FEnhancedActionKeyMapping& MapS = MoveMappingContext->MapKey(MoveForwardAction, EKeys::S);
+		UInputModifierNegate* Negate = NewObject<UInputModifierNegate>(MoveMappingContext, TEXT("NegateForward"));
+		MapS.Modifiers.Add(Negate);
+	}
+	MoveMappingContext->MapKey(MoveRightAction, EKeys::D);
+	{
+		FEnhancedActionKeyMapping& MapA = MoveMappingContext->MapKey(MoveRightAction, EKeys::A);
+		UInputModifierNegate* Negate = NewObject<UInputModifierNegate>(MoveMappingContext, TEXT("NegateRight"));
+		MapA.Modifiers.Add(Negate);
+	}
+	MoveMappingContext->MapKey(LookAction, EKeys::Mouse2D);
+
+	InputComponentEx->InputConfig.MoveForwardAxis = MoveForwardAction;
+	InputComponentEx->InputConfig.MoveRightAxis = MoveRightAction;
+	InputComponentEx->InputConfig.Look = LookAction;
+	InputComponentEx->InputConfig.DefaultMappingContext = MoveMappingContext;
 }
 
 void AUEDemoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -50,64 +71,35 @@ void AUEDemoCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 	}
 
 	APlayerController* PC = Cast<APlayerController>(GetController());
-	if (!PC || !PC->GetLocalPlayer())
+	if (!PC)
 	{
-		UE_LOG(LogUEDemo, Warning, TEXT("UEDemoCharacter: No PlayerController or LocalPlayer during SetupPlayerInputComponent."));
+		UE_LOG(LogUEDemo, Warning, TEXT("UEDemoCharacter: No PlayerController during SetupPlayerInputComponent."));
 		return;
 	}
 
-	UEnhancedInputLocalPlayerSubsystem* Subsystem = PC->GetLocalPlayer()->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>();
-	if (!Subsystem)
+	if (!bInputExHooked)
 	{
-		UE_LOG(LogUEDemo, Warning, TEXT("UEDemoCharacter: UEnhancedInputLocalPlayerSubsystem not found."));
-		return;
+		InputComponentEx->OnMoveForwardAxis.AddUObject(this, &AUEDemoCharacter::OnMoveForwardAxis);
+		InputComponentEx->OnMoveRightAxis.AddUObject(this, &AUEDemoCharacter::OnMoveRightAxis);
+		InputComponentEx->OnLook.AddUObject(this, &AUEDemoCharacter::OnLookAxis);
+		bInputExHooked = true;
 	}
 
-	if (!MoveMappingContext)
-	{
-		MoveMappingContext = NewObject<UInputMappingContext>(this, TEXT("MoveMappingContext"));
-
-		MoveMappingContext->MapKey(MoveForwardAction, EKeys::W);
-		{
-			FEnhancedActionKeyMapping& MapS = MoveMappingContext->MapKey(MoveForwardAction, EKeys::S);
-			UInputModifierNegate* Negate = NewObject<UInputModifierNegate>(MoveMappingContext, TEXT("NegateForward"));
-			MapS.Modifiers.Add(Negate);
-		}
-
-		MoveMappingContext->MapKey(MoveRightAction, EKeys::D);
-		{
-			FEnhancedActionKeyMapping& MapA = MoveMappingContext->MapKey(MoveRightAction, EKeys::A);
-			UInputModifierNegate* Negate = NewObject<UInputModifierNegate>(MoveMappingContext, TEXT("NegateRight"));
-			MapA.Modifiers.Add(Negate);
-		}
-
-		MoveMappingContext->MapKey(LookAction, EKeys::Mouse2D);
-	}
-
-	if (!bMoveMappingAdded)
-	{
-		Subsystem->AddMappingContext(MoveMappingContext, 0);
-		bMoveMappingAdded = true;
-	}
-
-	EnhancedInput->BindAction(MoveForwardAction, ETriggerEvent::Triggered, this, &AUEDemoCharacter::OnMoveForward);
-	EnhancedInput->BindAction(MoveRightAction, ETriggerEvent::Triggered, this, &AUEDemoCharacter::OnMoveRight);
-	EnhancedInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &AUEDemoCharacter::OnLook);
+	InputComponentEx->InitializeInput(PC);
 }
 
-void AUEDemoCharacter::OnMoveForward(const FInputActionValue& Value)
+void AUEDemoCharacter::OnMoveForwardAxis(float Axis)
 {
-	AddMovementInput(GetActorForwardVector(), Value.Get<float>());
+	AddMovementInput(GetActorForwardVector(), Axis);
 }
 
-void AUEDemoCharacter::OnMoveRight(const FInputActionValue& Value)
+void AUEDemoCharacter::OnMoveRightAxis(float Axis)
 {
-	AddMovementInput(GetActorRightVector(), Value.Get<float>());
+	AddMovementInput(GetActorRightVector(), Axis);
 }
 
-void AUEDemoCharacter::OnLook(const FInputActionValue& Value)
+void AUEDemoCharacter::OnLookAxis(const FVector2D& Axis)
 {
-	const FVector2D Axis = Value.Get<FVector2D>();
 	AddControllerYawInput(Axis.X);
 	AddControllerPitchInput(-Axis.Y);
 }

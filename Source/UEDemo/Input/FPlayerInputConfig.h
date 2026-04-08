@@ -13,6 +13,12 @@ struct FPlayerInputConfig
 	UPROPERTY(EditAnywhere, Category = "Move")
 	UInputAction* Move = nullptr;
 
+	UPROPERTY(EditAnywhere, Category = "Move")
+	UInputAction* MoveForwardAxis = nullptr;
+
+	UPROPERTY(EditAnywhere, Category = "Move")
+	UInputAction* MoveRightAxis = nullptr;
+
 	UPROPERTY(EditAnywhere, Category = "Look")
 	UInputAction* Look = nullptr;
 

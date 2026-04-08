@@ -22,9 +22,12 @@ public:
 	void InitializeInput(APlayerController* PlayerController);
 
 	DECLARE_MULTICAST_DELEGATE_OneParam(FInputAxis2D, const FVector2D&);
+	DECLARE_MULTICAST_DELEGATE_OneParam(FInputAxis1D, float);
 	DECLARE_MULTICAST_DELEGATE(FInputAction);
 
 	FInputAxis2D OnMove;
+	FInputAxis1D OnMoveForwardAxis;
+	FInputAxis1D OnMoveRightAxis;
 	FInputAxis2D OnLook;
 	FInputAction OnJump;
 	FInputAction OnPrimaryAttack;
@@ -36,9 +39,14 @@ private:
 	void BindActions(UEnhancedInputComponent* EnhancedInputComponent);
 
 	void HandleMove(const FInputActionValue& Value);
+	void HandleMoveForwardAxis(const FInputActionValue& Value);
+	void HandleMoveRightAxis(const FInputActionValue& Value);
 	void HandleLook(const FInputActionValue& Value);
 	void HandleJump(const FInputActionValue& Value);
 	void HandlePrimaryAttack(const FInputActionValue& Value);
 	void HandleSecondaryAttack(const FInputActionValue& Value);
 	void HandleSwitchWeapon(const FInputActionValue& Value);
+
+	bool bDefaultMappingPushed = false;
+	bool bActionsBound = false;
 };

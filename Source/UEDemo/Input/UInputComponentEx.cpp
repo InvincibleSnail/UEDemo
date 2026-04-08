@@ -43,9 +43,15 @@ void UInputComponentEx::AddMappingContext(APlayerController* PlayerController)
 		return;
 	}
 
+	if (bDefaultMappingPushed)
+	{
+		return;
+	}
+
 	if (UEnhancedInputLocalPlayerSubsystem* Subsys = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
 	{
 		Subsys->AddMappingContext(InputConfig.DefaultMappingContext, 0);
+		bDefaultMappingPushed = true;
 	}
 }
 
@@ -56,6 +62,19 @@ void UInputComponentEx::BindActions(UEnhancedInputComponent* EnhancedInput)
 		return;
 	}
 
+	if (bActionsBound)
+	{
+		return;
+	}
+
+	if (InputConfig.MoveForwardAxis)
+	{
+		EnhancedInput->BindAction(InputConfig.MoveForwardAxis, ETriggerEvent::Triggered, this, &UInputComponentEx::HandleMoveForwardAxis);
+	}
+	if (InputConfig.MoveRightAxis)
+	{
+		EnhancedInput->BindAction(InputConfig.MoveRightAxis, ETriggerEvent::Triggered, this, &UInputComponentEx::HandleMoveRightAxis);
+	}
 	if (InputConfig.Move)
 	{
 		EnhancedInput->BindAction(InputConfig.Move, ETriggerEvent::Triggered, this, &UInputComponentEx::HandleMove);
@@ -80,11 +99,23 @@ void UInputComponentEx::BindActions(UEnhancedInputComponent* EnhancedInput)
 	{
 		EnhancedInput->BindAction(InputConfig.SwitchWeapon, ETriggerEvent::Started, this, &UInputComponentEx::HandleSwitchWeapon);
 	}
+
+	bActionsBound = true;
 }
 
 void UInputComponentEx::HandleMove(const FInputActionValue& Value)
 {
 	OnMove.Broadcast(Value.Get<FVector2D>());
+}
+
+void UInputComponentEx::HandleMoveForwardAxis(const FInputActionValue& Value)
+{
+	OnMoveForwardAxis.Broadcast(Value.Get<float>());
+}
+
+void UInputComponentEx::HandleMoveRightAxis(const FInputActionValue& Value)
+{
+	OnMoveRightAxis.Broadcast(Value.Get<float>());
 }
 
 void UInputComponentEx::HandleLook(const FInputActionValue& Value)
