@@ -39,6 +39,11 @@ AUEDemoController::AUEDemoController(const FObjectInitializer& ObjectInitializer
 	}
 }
 
+UInputComponentEx* AUEDemoController::GetInputComponentEx() const
+{
+	return InputComponentEx;
+}
+
 void AUEDemoController::BeginPlay()
 {
 	Super::BeginPlay();

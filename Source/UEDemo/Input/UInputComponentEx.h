@@ -15,19 +15,15 @@ class UEDEMO_API UInputComponentEx : public UActorComponent
 	GENERATED_BODY()
 
 public:
-	UInputComponentEx();
-
 	UPROPERTY(EditAnywhere, Category = "Input Setup")
 	FPlayerInputConfig InputConfig;
-
+	
+	UInputComponentEx();
 	void InitializeInput(APlayerController* PlayerController);
-
 	template<typename U>
 	void RegisterInput(EPlayerInputConfigEvent Slot, U* User, void (U::*Handler)(float));
-
 	template<typename U>
 	void RegisterInput(EPlayerInputConfigEvent Slot, U* User, void (U::*Handler)(const FVector2D&));
-
 	template<typename U>
 	void RegisterInput(EPlayerInputConfigEvent Slot, U* User, void (U::*Handler)());
 

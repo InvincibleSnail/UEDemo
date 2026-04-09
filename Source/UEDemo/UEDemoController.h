@@ -14,13 +14,11 @@ class AUEDemoController : public APlayerController
 
 public:
 	AUEDemoController(const FObjectInitializer& ObjectInitializer);
-
-	UInputComponentEx* GetInputComponentEx() const { return InputComponentEx; }
+	UInputComponentEx* GetInputComponentEx() const;
 
 protected:
 	UPROPERTY()
 	TObjectPtr<UInputComponentEx> InputComponentEx;
-
 	UPROPERTY()
 	TObjectPtr<AUEDemoCharacter> AueDemoCharacter;
 	
