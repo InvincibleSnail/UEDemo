@@ -6,7 +6,7 @@
 #include "CustomInputSubSystem.generated.h"
 
 UCLASS()
-class YOUR_API UCustomInputSubSystem : public UGameInstanceSubsystem
+class UEDEMO_API UCustomInputSubSystem : public UGameInstanceSubsystem
 {
 	GENERATED_BODY()
 
