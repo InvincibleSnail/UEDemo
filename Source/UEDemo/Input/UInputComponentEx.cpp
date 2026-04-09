@@ -18,13 +18,7 @@ void UInputComponentEx::InitializeInput(APlayerController* PlayerController)
 
 	AddMappingContext(PlayerController);
 
-	APawn* Pawn = PlayerController->GetPawn();
-	if (!Pawn)
-	{
-		return;
-	}
-
-	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(Pawn->InputComponent))
+	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 	{
 		BindActions(EIC);
 	}
