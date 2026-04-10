@@ -41,7 +41,6 @@ public:
 	FInputAction OnSwitchWeapon;
 
 private:
-	void AddMappingContext(APlayerController* PlayerController);
 	void BindActions(UEnhancedInputComponent* EnhancedInputComponent);
 
 	void HandleMove(const FInputActionValue& Value);
@@ -53,8 +52,10 @@ private:
 	void HandleSecondaryAttack(const FInputActionValue& Value);
 	void HandleSwitchWeapon(const FInputActionValue& Value);
 
-	bool bDefaultMappingPushed = false;
 	bool bActionsBound = false;
+	
+protected:
+	virtual void OnRegister() override;
 };
 
 template<typename U>

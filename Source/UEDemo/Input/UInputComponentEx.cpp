@@ -1,12 +1,29 @@
 #include "UInputComponentEx.h"
+
+#include "CustomInputSubSystem.h"
 #include "EnhancedInputComponent.h"
-#include "EnhancedInputSubsystems.h"
 #include "GameFramework/Pawn.h"
 #include "GameFramework/PlayerController.h"
 
 UInputComponentEx::UInputComponentEx()
 {
 	PrimaryComponentTick.bCanEverTick = false;
+}
+
+void UInputComponentEx::OnRegister()
+{
+	Super::OnRegister();
+
+	if (APlayerController* PC = Cast<APlayerController>(GetOwner()))
+	{
+		if (UGameInstance* GI = PC->GetGameInstance())
+		{
+			if (UCustomInputSubSystem* Subsystem = GI->GetSubsystem<UCustomInputSubSystem>())
+			{
+				InputConfig = Subsystem->InputConfig;
+			}
+		}
+	}
 }
 
 void UInputComponentEx::InitializeInput(APlayerController* PlayerController)
@@ -16,36 +33,9 @@ void UInputComponentEx::InitializeInput(APlayerController* PlayerController)
 		return;
 	}
 
-	AddMappingContext(PlayerController);
-
 	if (UEnhancedInputComponent* EIC = Cast<UEnhancedInputComponent>(PlayerController->InputComponent))
 	{
 		BindActions(EIC);
-	}
-}
-
-void UInputComponentEx::AddMappingContext(APlayerController* PlayerController)
-{
-	if (!InputConfig.DefaultMappingContext)
-	{
-		return;
-	}
-
-	ULocalPlayer* LocalPlayer = PlayerController->GetLocalPlayer();
-	if (!LocalPlayer)
-	{
-		return;
-	}
-
-	if (bDefaultMappingPushed)
-	{
-		return;
-	}
-
-	if (UEnhancedInputLocalPlayerSubsystem* Subsys = LocalPlayer->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-	{
-		Subsys->AddMappingContext(InputConfig.DefaultMappingContext, 0);
-		bDefaultMappingPushed = true;
 	}
 }
 
