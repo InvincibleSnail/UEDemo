@@ -27,4 +27,5 @@ private:
 	void OnMoveForwardAxis(float Axis);
 	void OnMoveRightAxis(float Axis);
 	void OnLookAxis(const FVector2D& Axis);
+	void OnJump();
 };

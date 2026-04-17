@@ -7,21 +7,6 @@
 AUEDemoController::AUEDemoController(const FObjectInitializer& ObjectInitializer)
 {
 	InputComponentEx = ObjectInitializer.CreateDefaultSubobject<UInputComponentEx>(this, TEXT("InputComponentEx"));
-	if (UInputComponentEx* IC = InputComponentEx)
-	{
-		if (auto* Subsystem = GetGameInstance()->GetSubsystem<UCustomInputSubSystem>())
-		{
-			IC->InputConfig = Subsystem->InputConfig;
-
-			if (ULocalPlayer* LP = GetLocalPlayer())
-			{
-				if (auto* Subsys = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
-				{
-					Subsys->AddMappingContext(IC->InputConfig.DefaultMappingContext, 0);
-				}
-			}
-		}
-	}
 }
 
 UInputComponentEx* AUEDemoController::GetInputComponentEx() const
@@ -32,6 +17,31 @@ UInputComponentEx* AUEDemoController::GetInputComponentEx() const
 void AUEDemoController::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (!InputComponentEx)
+	{
+		return;
+	}
+
+	if (UGameInstance* GI = GetGameInstance())
+	{
+		if (UCustomInputSubSystem* Subsystem = GI->GetSubsystem<UCustomInputSubSystem>())
+		{
+			InputComponentEx->InputConfig = Subsystem->InputConfig;
+		}
+	}
+
+	if (ULocalPlayer* LP = GetLocalPlayer())
+	{
+		if (UEnhancedInputLocalPlayerSubsystem* EISubsystem = LP->GetSubsystem<UEnhancedInputLocalPlayerSubsystem>())
+		{
+			if (InputComponentEx->InputConfig.DefaultMappingContext)
+			{
+				EISubsystem->AddMappingContext(InputComponentEx->InputConfig.DefaultMappingContext, 0);
+			}
+		}
+	}
+
 	InputComponentEx->InitializeInput(this);
 }
 

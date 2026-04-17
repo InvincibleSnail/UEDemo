@@ -36,6 +36,7 @@ void AUEDemoCharacter::BeginPlay()
 		InputEx->RegisterInput(EPlayerInputConfigEvent::MoveForwardAxis, this, &AUEDemoCharacter::OnMoveForwardAxis);
 		InputEx->RegisterInput(EPlayerInputConfigEvent::MoveRightAxis, this, &AUEDemoCharacter::OnMoveRightAxis);
 		InputEx->RegisterInput(EPlayerInputConfigEvent::Look, this, &AUEDemoCharacter::OnLookAxis);
+		InputEx->RegisterInput(EPlayerInputConfigEvent::Jump, this, &AUEDemoCharacter::OnJump);
 	}
 }
 
@@ -53,4 +54,9 @@ void AUEDemoCharacter::OnLookAxis(const FVector2D& Axis)
 {
 	AddControllerYawInput(Axis.X);
 	AddControllerPitchInput(-Axis.Y);
+}
+
+void AUEDemoCharacter::OnJump()
+{
+	Jump();
 }

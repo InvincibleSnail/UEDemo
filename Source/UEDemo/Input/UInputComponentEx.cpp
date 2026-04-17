@@ -14,14 +14,17 @@ void UInputComponentEx::OnRegister()
 {
 	Super::OnRegister();
 
-	if (APlayerController* PC = Cast<APlayerController>(GetOwner()))
+	APlayerController* PC = Cast<APlayerController>(GetOwner());
+	if (!PC || PC->HasAnyFlags(RF_ClassDefaultObject))
 	{
-		if (UGameInstance* GI = PC->GetGameInstance())
+		return;
+	}
+
+	if (UGameInstance* GI = PC->GetGameInstance())
+	{
+		if (UCustomInputSubSystem* Subsystem = GI->GetSubsystem<UCustomInputSubSystem>())
 		{
-			if (UCustomInputSubSystem* Subsystem = GI->GetSubsystem<UCustomInputSubSystem>())
-			{
-				InputConfig = Subsystem->InputConfig;
-			}
+			InputConfig = Subsystem->InputConfig;
 		}
 	}
 }

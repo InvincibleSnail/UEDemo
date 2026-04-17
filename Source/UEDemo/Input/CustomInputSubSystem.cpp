@@ -18,6 +18,9 @@ void UCustomInputSubSystem::InitInputActions()
 
 	InputConfig.Look = NewObject<UInputAction>(this);
 	InputConfig.Look->ValueType = EInputActionValueType::Axis2D;
+
+	InputConfig.Jump = NewObject<UInputAction>(this);
+	InputConfig.Jump->ValueType = EInputActionValueType::Boolean;
 }
 
 void UCustomInputSubSystem::InitMappingContext()
@@ -37,4 +40,6 @@ void UCustomInputSubSystem::InitMappingContext()
 	MapA.Modifiers.Add(NegateA);
 
 	InputConfig.DefaultMappingContext->MapKey(InputConfig.Look, EKeys::Mouse2D);
+
+	InputConfig.DefaultMappingContext->MapKey(InputConfig.Jump, EKeys::SpaceBar);
 }
