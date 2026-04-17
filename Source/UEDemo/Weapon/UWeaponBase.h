@@ -9,7 +9,7 @@ class UWeaponBase : public UObject
 public:
 	UWeaponBase();
 	virtual void Attack();
-	virtual void CanAttack();
+	virtual bool CanAttack();
 protected:
 	UPROPERTY()
 	float Damage = 10.0f;
