@@ -7,4 +7,12 @@ class UWeaponBase : public UObject
 	GENERATED_BODY()
 
 public:
+	UWeaponBase();
+	virtual void Attack();
+	virtual void CanAttack();
+protected:
+	UPROPERTY()
+	float Damage = 10.0f;
+	UPROPERTY()
+	float CoolDown = 0.5f;
 };

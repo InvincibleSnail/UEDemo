@@ -1,9 +1,9 @@
 #pragma once
 #include "UWeaponBase.h"
-#include "UBow.generated.h"
+#include "USword.generated.h"
 
 UCLASS()
-class UBow : public UWeaponBase
+class USword : public UWeaponBase
 {
 	GENERATED_BODY()
 public:
