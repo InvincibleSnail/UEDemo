@@ -20,6 +20,8 @@ AUEDemoCharacter::AUEDemoCharacter(const FObjectInitializer& ObjectInitializer)
 	FirstPersonCamera->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCamera->SetRelativeLocation(FVector(0.f, 0.f, 64.f));
 	FirstPersonCamera->bUsePawnControlRotation = true;
+	
+	WeaponComponent = ObjectInitializer.CreateDefaultSubobject<UWeaponComponent>(this, TEXT("WeaponComponent"));
 }
 
 void AUEDemoCharacter::BeginPlay()

@@ -2,6 +2,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Weapon/UWeaponComponent.h"
 #include "UEDemoCharacter.generated.h"
 
 class UCameraComponent;
@@ -18,6 +19,8 @@ public:
 protected:
 	UPROPERTY()
 	TObjectPtr<UCameraComponent> FirstPersonCamera;
+	UPROPERTY()
+	TObjectPtr<UWeaponComponent> WeaponComponent;
 	UPROPERTY()
 	AUEDemoController* AueDemoController;
 	
