@@ -27,6 +27,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
+	void AddMesh();
 	void OnMoveForwardAxis(float Axis);
 	void OnMoveRightAxis(float Axis);
 	void OnLookAxis(const FVector2D& Axis);

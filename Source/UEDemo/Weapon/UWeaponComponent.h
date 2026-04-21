@@ -1,5 +1,6 @@
 #pragma once
 #include "CoreMinimal.h"
+#include "USword.h"
 #include "Components/ActorComponent.h"
 #include "UWeaponBase.h"
 #include "UWeaponComponent.generated.h"
@@ -16,10 +17,13 @@ public:
 	void SwitchWeapon(TSubclassOf<UWeaponBase> NewWeaponClass);
 	UWeaponBase* GetCurrentWeapon() const;
 	bool HasValidWeapon() const;
+	void AttachWeaponToCharacter();
 private:
 	void CreateWeapon();
 	UPROPERTY()
 	TObjectPtr<UWeaponBase> CurrentWeapon = nullptr;
 	UPROPERTY(EditAnywhere, Category = "Weapon Setup")
-	TSubclassOf<UWeaponBase> DefaultWeaponClass;
+	TSubclassOf<UWeaponBase> DefaultWeaponClass = USword::StaticClass();
+	UPROPERTY()
+	UStaticMesh* weaponMesh;
 };

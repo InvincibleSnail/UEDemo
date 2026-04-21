@@ -10,6 +10,7 @@
 AUEDemoCharacter::AUEDemoCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
+	AddMesh();
 	PrimaryActorTick.bCanEverTick = false;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = true;
@@ -20,7 +21,7 @@ AUEDemoCharacter::AUEDemoCharacter(const FObjectInitializer& ObjectInitializer)
 	FirstPersonCamera->SetupAttachment(GetCapsuleComponent());
 	FirstPersonCamera->SetRelativeLocation(FVector(0.f, 0.f, 64.f));
 	FirstPersonCamera->bUsePawnControlRotation = true;
-	
+
 	WeaponComponent = ObjectInitializer.CreateDefaultSubobject<UWeaponComponent>(this, TEXT("WeaponComponent"));
 }
 
@@ -40,6 +41,19 @@ void AUEDemoCharacter::BeginPlay()
 		InputEx->RegisterInput(EPlayerInputConfigEvent::Look, this, &AUEDemoCharacter::OnLookAxis);
 		InputEx->RegisterInput(EPlayerInputConfigEvent::Jump, this, &AUEDemoCharacter::OnJump);
 	}
+}
+
+void AUEDemoCharacter::AddMesh()
+{
+	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshFinder(
+		TEXT("/Game/Mannequin/Character/Mesh/SK_Mannequin.SK_Mannequin"));
+	if (MeshFinder.Succeeded())
+	{
+		GetMesh()->SetSkeletalMesh(MeshFinder.Object);
+	}
+
+	GetMesh()->SetRelativeLocation(FVector(0, 0, -90));
+	GetMesh()->SetRelativeRotation(FRotator(0, -90, 0));
 }
 
 void AUEDemoCharacter::OnMoveForwardAxis(float Axis)
