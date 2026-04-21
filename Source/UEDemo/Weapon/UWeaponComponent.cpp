@@ -39,18 +39,12 @@ bool UWeaponComponent::HasValidWeapon() const
 void UWeaponComponent::AttachWeaponToCharacter()
 {
 	ACharacter* Character = Cast<ACharacter>(GetOwner());
-	if (!Character) return;
+	if (!Character || !CurrentWeapon) return;
 
-	USkeletalMeshComponent* characterMesh = Character->GetMesh();
-	if (!characterMesh || !weaponMesh) return;
+	USkeletalMeshComponent* CharacterMesh = Character->GetMesh();
+	if (!CharacterMesh) return;
 
-	UStaticMeshComponent* MeshComp = NewObject<UStaticMeshComponent>(this);
-	MeshComp->SetStaticMesh(weaponMesh);
-	MeshComp->RegisterComponent();
-	MeshComp->AttachToComponent(characterMesh, 
-		FAttachmentTransformRules::SnapToTargetNotIncludingScale,
-		TEXT("hand_r")
-	);
+	CurrentWeapon->SpawnAndAttachToCharacter(CharacterMesh);
 }
 
 void UWeaponComponent::CreateWeapon()

@@ -46,7 +46,7 @@ void AUEDemoCharacter::BeginPlay()
 void AUEDemoCharacter::AddMesh()
 {
 	static ConstructorHelpers::FObjectFinder<USkeletalMesh> MeshFinder(
-		TEXT("/Game/Mannequin/Character/Mesh/SK_Mannequin.SK_Mannequin"));
+		TEXT("/Engine/EditorMeshes/SkeletalMesh/DefaultSkeletalMesh.DefaultSkeletalMesh"));
 	if (MeshFinder.Succeeded())
 	{
 		GetMesh()->SetSkeletalMesh(MeshFinder.Object);

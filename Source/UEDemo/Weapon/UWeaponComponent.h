@@ -24,6 +24,4 @@ private:
 	TObjectPtr<UWeaponBase> CurrentWeapon = nullptr;
 	UPROPERTY(EditAnywhere, Category = "Weapon Setup")
 	TSubclassOf<UWeaponBase> DefaultWeaponClass = USword::StaticClass();
-	UPROPERTY()
-	UStaticMesh* weaponMesh;
 };
