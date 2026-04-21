@@ -14,3 +14,7 @@ bool UWeaponBase::CanAttack()
 {
 	return true;
 }
+
+void UWeaponBase::SpawnAndAttachToCharacter(USkeletalMeshComponent* CharacterMesh)
+{
+}

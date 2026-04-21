@@ -10,6 +10,9 @@ public:
 	UWeaponBase();
 	virtual void Attack();
 	virtual bool CanAttack();
+	virtual void SpawnAndAttachToCharacter(USkeletalMeshComponent* CharacterMesh);
+	UPROPERTY(EditAnywhere, Category="Weapon")
+	UStaticMesh* WeaponMesh;
 protected:
 	UPROPERTY()
 	float Damage = 10.0f;
