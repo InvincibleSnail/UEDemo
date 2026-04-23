@@ -1,17 +1,8 @@
 #include "USword.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Components/StaticMeshComponent.h"
-#include "UObject/ConstructorHelpers.h"
-
-USword::USword()
-{
-	static ConstructorHelpers::FObjectFinder<UStaticMesh> WeaponMeshFinder(
-		TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
-	if (WeaponMeshFinder.Succeeded())
-	{
-		WeaponMesh = WeaponMeshFinder.Object;
-	}
-}
+#include "Engine/StaticMesh.h"
+#include "UObject/UObjectGlobals.h"
 
 void USword::Attack()
 {
@@ -26,7 +17,14 @@ bool USword::CanAttack()
 void USword::SpawnAndAttachToCharacter(USkeletalMeshComponent* CharacterMesh)
 {
 	Super::SpawnAndAttachToCharacter(CharacterMesh);
-	if (!CharacterMesh || !WeaponMesh) return;
+	if (!CharacterMesh) return;
+
+	UStaticMesh* MeshToUse = WeaponMesh;
+	if (!MeshToUse)
+	{
+		MeshToUse = LoadObject<UStaticMesh>(nullptr, TEXT("/Engine/BasicShapes/Cylinder.Cylinder"));
+	}
+	if (!MeshToUse) return;
 
 	AActor* OwnerActor = CharacterMesh->GetOwner();
 	if (!OwnerActor) return;
@@ -34,8 +32,12 @@ void USword::SpawnAndAttachToCharacter(USkeletalMeshComponent* CharacterMesh)
 	const FName HandSocket(TEXT("hand_r"));
 	const FName AttachSocket = CharacterMesh->DoesSocketExist(HandSocket) ? HandSocket : NAME_None;
 
-	UStaticMeshComponent* MeshComp = NewObject<UStaticMeshComponent>(OwnerActor);
-	MeshComp->SetStaticMesh(WeaponMesh);
+	UStaticMeshComponent* MeshComp = NewObject<UStaticMeshComponent>(OwnerActor, NAME_None, RF_Transient);
+	MeshComp->SetStaticMesh(MeshToUse);
+	MeshComp->SetMobility(EComponentMobility::Movable);
+	MeshComp->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+
+	OwnerActor->AddInstanceComponent(MeshComp);
 	MeshComp->RegisterComponent();
 	MeshComp->AttachToComponent(CharacterMesh, FAttachmentTransformRules::SnapToTargetNotIncludingScale, AttachSocket);
 }

@@ -10,7 +10,7 @@
 AUEDemoCharacter::AUEDemoCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	AddMesh();
+	// AddMesh();
 	PrimaryActorTick.bCanEverTick = false;
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = true;
