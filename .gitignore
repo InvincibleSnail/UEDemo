@@ -51,3 +51,6 @@ Plugins/*/Intermediate/
 *.log
 
 .idea/
+
+# metahuman相关
+Content/MetaHumans/
