@@ -17,6 +17,9 @@ bool USword::CanAttack()
 void USword::SpawnAndAttachToCharacter(USkeletalMeshComponent* CharacterMesh)
 {
 	Super::SpawnAndAttachToCharacter(CharacterMesh);
+	///
+	return;
+	///
 	if (!CharacterMesh) return;
 
 	UStaticMesh* MeshToUse = WeaponMesh;

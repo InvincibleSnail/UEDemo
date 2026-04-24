@@ -2,26 +2,19 @@
 #include "UEDemoController.h"
 #include "Input/PlayerInputConfigEvent.h"
 #include "UInputComponentEx.h"
-#include "Camera/CameraComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "GameFramework/PlayerController.h"
 
 AUEDemoCharacter::AUEDemoCharacter(const FObjectInitializer& ObjectInitializer)
 	: Super(ObjectInitializer)
 {
-	// AddMesh();
 	PrimaryActorTick.bCanEverTick = false;
-	bUseControllerRotationPitch = false;
+
+	bUseControllerRotationPitch = true;
 	bUseControllerRotationYaw = true;
+	bUseControllerRotationRoll = false;
 
 	GetCharacterMovement()->bOrientRotationToMovement = false;
-
-	FirstPersonCamera = ObjectInitializer.CreateDefaultSubobject<UCameraComponent>(this, TEXT("FirstPersonCamera"));
-	FirstPersonCamera->SetupAttachment(GetCapsuleComponent());
-	FirstPersonCamera->SetRelativeLocation(FVector(0.f, 0.f, 64.f));
-	FirstPersonCamera->bUsePawnControlRotation = true;
-
 	WeaponComponent = ObjectInitializer.CreateDefaultSubobject<UWeaponComponent>(this, TEXT("WeaponComponent"));
 }
 
